@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ReturnCode {
 
+    FAILED_DATA_ALREADY_EXISTS(409, "Data duplikat"),
     SUCCESSFULLY_REGISTER(200, "Successfully Register");
 
     private final int statusCode;
