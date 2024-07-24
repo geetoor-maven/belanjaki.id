@@ -9,17 +9,18 @@ import java.util.Map;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class BaseResponse<T> {
 
     private T data;
     private Meta meta;
 
+    public BaseResponse() {
+    }
 
     public Object getCustomizeResponse(String key) {
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("data", Map.of(key, data));
         result.put("meta", meta);
+        result.put("data", Map.of(key, data));
         return result;
     }
 

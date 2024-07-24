@@ -1,15 +1,14 @@
 package com.belanjaki.id.usersmanagement.model;
 
 import com.belanjaki.id.common.BaseEntity;
+import com.belanjaki.id.usersmanagement.dto.user.RequestCreateUserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
+@Builder
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "mst_user", schema = "users")
