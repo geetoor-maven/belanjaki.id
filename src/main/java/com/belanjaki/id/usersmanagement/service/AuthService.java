@@ -12,19 +12,26 @@ import com.belanjaki.id.usersmanagement.validator.UserValidator;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @AllArgsConstructor
 @Service
-public class AuthService {
+public class AuthService implements UserDetailsService {
 
     private final MstUserRepository mstUserRepository;
     private final ResourceLabel resourceLabel;
     private final UserValidator userValidator;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
+    }
 
     @Transactional
     public Object registerUser(RequestCreateUserDTO dto){
@@ -50,5 +57,12 @@ public class AuthService {
 
         BaseResponse<MstUser> baseResponse = new BaseResponse<>(mstUser, new Meta(ReturnCode.SUCCESSFULLY_REGISTER.getStatusCode(), ReturnCode.SUCCESSFULLY_REGISTER.getMessage(), ""));
         return baseResponse.getCustomizeResponse("user_create");
+
     }
+
+    public Object loginUser(){
+
+        return new Object();
+    }
+
 }

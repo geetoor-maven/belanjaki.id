@@ -3,6 +3,7 @@ package com.belanjaki.id.usersmanagement.controller;
 import com.belanjaki.id.common.constant.BasePath;
 import com.belanjaki.id.usersmanagement.dto.user.RequestCreateUserDTO;
 import com.belanjaki.id.usersmanagement.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Auth API", description = "Auth User API")
 @RestController
 @AllArgsConstructor
 public class AuthController {
