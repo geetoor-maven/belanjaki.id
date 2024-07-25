@@ -25,13 +25,23 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Object> handleItemExistsException(ResourceNotFoundException ex, WebRequest request) {
+        ErrorObjectDTO theErrorObject = new ErrorObjectDTO();
+        theErrorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
+        theErrorObject.setMessage(ex.getMessage());
+        theErrorObject.setTimeStamp(new Date());
+        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(theErrorObject, new Meta(ReturnCode.DATA_NOT_FOUND.getStatusCode(), ReturnCode.DATA_NOT_FOUND.getMessage()));
+        return new ResponseEntity<>(baseResponse.getCustomizeResponse("error"), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(ItemAlreadyExistException.class)
     public ResponseEntity<Object> handleItemExistsException(ItemAlreadyExistException ex, WebRequest request) {
         ErrorObjectDTO theErrorObject = new ErrorObjectDTO();
         theErrorObject.setStatusCode(HttpStatus.CONFLICT.value());
         theErrorObject.setMessage(ex.getMessage());
         theErrorObject.setTimeStamp(new Date());
-        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(theErrorObject, new Meta(ReturnCode.FAILED_DATA_ALREADY_EXISTS.getStatusCode(), ReturnCode.FAILED_DATA_ALREADY_EXISTS.getMessage(),""));
+        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(theErrorObject, new Meta(ReturnCode.FAILED_DATA_ALREADY_EXISTS.getStatusCode(), ReturnCode.FAILED_DATA_ALREADY_EXISTS.getMessage()));
         return new ResponseEntity<>(baseResponse.getCustomizeResponse("error"), HttpStatus.CONFLICT);
     }
 
@@ -41,7 +51,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
         errorObject.setMessage(ex.getMessage());
         errorObject.setTimeStamp(new Date());
-        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(errorObject, new Meta(ReturnCode.FAILED_BAD_REQUEST.getStatusCode(), ReturnCode.FAILED_BAD_REQUEST.getMessage(),""));
+        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(errorObject, new Meta(ReturnCode.FAILED_BAD_REQUEST.getStatusCode(), ReturnCode.FAILED_BAD_REQUEST.getMessage()));
         return new ResponseEntity<>(baseResponse.getCustomizeResponse("error"), HttpStatus.BAD_REQUEST);
     }
 
@@ -51,7 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorObject.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorObject.setMessage(ex.getMessage());
         errorObject.setTimeStamp(new Date());
-        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(errorObject, new Meta(ReturnCode.FAILED_BAD_REQUEST.getStatusCode(), ex.getMessage(),""));
+        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(errorObject, new Meta(ReturnCode.FAILED_BAD_REQUEST.getStatusCode(), ex.getMessage()));
         return new ResponseEntity<>(baseResponse.getCustomizeResponse("error"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -70,7 +80,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         body.put("messages", errors);
 
-        BaseResponse<Object> baseResponse = new BaseResponse<>(body.get("messages"), new Meta(ReturnCode.FAILED_BAD_REQUEST.getStatusCode(), ReturnCode.FAILED_BAD_REQUEST.getMessage(), ""));
+        BaseResponse<Object> baseResponse = new BaseResponse<>(body.get("messages"), new Meta(ReturnCode.FAILED_BAD_REQUEST.getStatusCode(), ReturnCode.FAILED_BAD_REQUEST.getMessage()));
         return new ResponseEntity<>(baseResponse.getCustomizeResponse("error"), HttpStatus.NOT_FOUND);
     }
 }

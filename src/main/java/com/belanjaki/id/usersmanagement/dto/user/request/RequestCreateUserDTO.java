@@ -1,4 +1,4 @@
-package com.belanjaki.id.usersmanagement.dto.user;
+package com.belanjaki.id.usersmanagement.dto.user.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

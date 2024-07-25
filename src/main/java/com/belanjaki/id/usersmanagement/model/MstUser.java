@@ -1,7 +1,6 @@
 package com.belanjaki.id.usersmanagement.model;
 
 import com.belanjaki.id.common.BaseEntity;
-import com.belanjaki.id.usersmanagement.dto.user.RequestCreateUserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,7 +27,7 @@ public class MstUser extends BaseEntity {
     private String email;
 
     @JsonIgnore
-    @Column(name = "password", length = 50)
+    @Column(name = "password", length = 100)
     private String password;
 
     @Column(name = "number_phone", length = 50)
