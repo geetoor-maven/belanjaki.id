@@ -14,6 +14,7 @@ public class PermittedPathsConfig {
         Set<String> permittedPaths = new HashSet<>();
         permittedPaths.add("/api/v1/user/create");
         permittedPaths.add("/api/v1/user/login");
+        permittedPaths.add("/api/v1/user/validate-otp");
         permittedPaths.add("/swagger-ui/index.html");
         permittedPaths.add("/swagger-resources/**");
         permittedPaths.add("/v3/api-docs/**");

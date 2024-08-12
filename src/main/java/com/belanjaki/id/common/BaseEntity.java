@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 
 @MappedSuperclass
 @Data
@@ -15,14 +15,14 @@ public class BaseEntity {
 
     @Column(name = "created_date")
     @CreationTimestamp
-    private Timestamp createdDate;
+    private Instant createdDate;
 
     @Column(name = "created_by")
     private String createdBy;
 
     @Column(name = "updated_date")
     @UpdateTimestamp
-    private Timestamp updatedDate;
+    private Instant updatedDate;
 
     @Column(name = "updated_by")
     private String updatedBy;

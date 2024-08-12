@@ -25,11 +25,12 @@ public class UserValidator {
         });
     }
 
-    public void getUserWithValidate(RequestLoginUserDTO dto){
+    public MstUser getUserWithValidate(RequestLoginUserDTO dto){
         MstUser mstUser = mstUserRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new ResourceNotFoundException(resourceLabel.getBodyLabel("user.find.email.not.found")));
         boolean pwdMatch = passwordEncoder.matches(dto.getPassword(), mstUser.getPassword());
         if (!pwdMatch){
             throw new ResourceNotFoundException(resourceLabel.getBodyLabel("invalid.crediantial"));
         }
+        return mstUser;
     }
 }

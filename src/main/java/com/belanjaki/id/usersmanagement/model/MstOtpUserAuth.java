@@ -1,20 +1,20 @@
 package com.belanjaki.id.usersmanagement.model;
 
+import com.belanjaki.id.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @ToString(exclude = "mstUser")
 @Entity
 @Table(name = "mst_otp_user_auth", schema = "users")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Data
-public class MstOtpUserAuth {
+public class MstOtpUserAuth extends BaseEntity {
 
     @Id
     @Column(name = "otp_auth_id")
