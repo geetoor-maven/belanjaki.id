@@ -1,6 +1,7 @@
-package com.belanjaki.id.usersmanagement.model;
+package com.belanjaki.id.merchant.model;
 
 import com.belanjaki.id.common.BaseEntity;
+import com.belanjaki.id.usersmanagement.model.MstRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,20 +10,19 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Builder
-@EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "mst_user", schema = "users")
+@Table(name = "mst_merchant", schema = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class MstUser extends BaseEntity implements Serializable {
+public class MstMerchant extends BaseEntity implements Serializable {
 
     @Id
-    @Column(name = "user_id")
-    private UUID userId;
+    @Column(name = "merchant_id")
+    private UUID merchantId;
 
-    @Column(name = "name", length = 100)
-    private String name;
+    @Column(name = "merchant_name", length = 100)
+    private String merchantName;
 
     @Column(name = "email", length = 50)
     private String email;
@@ -34,10 +34,14 @@ public class MstUser extends BaseEntity implements Serializable {
     @Column(name = "number_phone", length = 50)
     private String numberPhone;
 
-    private String address;
+    @Column(name = "status", length = 15)
+    private String status;
 
     @Column(name = "img_profile", length = 50)
     private String imgProfile;
+
+    @Column(name = "description")
+    private String desc;
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)

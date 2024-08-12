@@ -2,6 +2,7 @@ package com.belanjaki.id.usersmanagement.service;
 
 import com.belanjaki.id.common.ResourceLabel;
 import com.belanjaki.id.common.constant.ReturnCode;
+import com.belanjaki.id.common.constant.RoleEnum;
 import com.belanjaki.id.common.dto.BaseResponse;
 import com.belanjaki.id.common.dto.Meta;
 import com.belanjaki.id.common.exception.ResourceNotFoundException;
@@ -16,8 +17,10 @@ import com.belanjaki.id.usersmanagement.repository.MstRoleRepository;
 import com.belanjaki.id.usersmanagement.repository.MstUserRepository;
 import com.belanjaki.id.usersmanagement.validator.UserValidator;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,7 +32,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class AuthService implements UserDetailsService {
 
@@ -51,8 +54,7 @@ public class AuthService implements UserDetailsService {
         // validate if user has been register
         userValidator.createUserValidatorIfHasBeenRegist(dto);
 
-        String user = "USER";
-        MstRole mstRole = mstRoleRepository.findByRoleName(user).orElseThrow(() -> new ResolutionException(resourceLabel.getBodyLabel("role.find.not.found")));
+        MstRole mstRole = mstRoleRepository.findByRoleName(RoleEnum.USER.getRoleName()).orElseThrow(() -> new ResolutionException(resourceLabel.getBodyLabel("role.find.not.found")));
         // Create new user using builder pattern
         MstUser mstUser = createObjectUser(dto, mstRole);
         // save users
@@ -102,5 +104,11 @@ public class AuthService implements UserDetailsService {
                 .email(email)
                 .token(jwt)
                 .build();
+    }
+
+    public MstUser getUserLogin(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        return mstUserRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(resourceLabel.getBodyLabel("user.find.is.not.login")));
     }
 }
