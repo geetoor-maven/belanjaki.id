@@ -3,6 +3,7 @@ package com.belanjaki.id.usersmanagement.controller;
 import com.belanjaki.id.common.constant.BasePath;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestCreateUserDTO;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestLoginUserDTO;
+import com.belanjaki.id.usersmanagement.dto.user.request.RequestOtpDTO;
 import com.belanjaki.id.usersmanagement.service.AuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -20,6 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+
+    @PostMapping(
+            path = BasePath.USER + "/validate-otp",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> validateOtpAfterLogin(@Valid @RequestBody RequestOtpDTO dto){
+        return new ResponseEntity<>(authService.validateOtpAfterLogin(dto), HttpStatus.OK);
+    }
 
     @PostMapping(
             path = BasePath.USER + "/login",

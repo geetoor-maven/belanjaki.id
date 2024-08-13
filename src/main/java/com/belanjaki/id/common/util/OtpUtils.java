@@ -2,6 +2,7 @@ package com.belanjaki.id.common.util;
 
 import java.security.SecureRandom;
 import java.security.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -23,7 +24,7 @@ public class OtpUtils {
 
     }
 
-    public static boolean isMoreThanOneMinute(Timestamp lastUpdatedDate){
+    public static boolean isMoreThanOneMinute(Instant lastUpdatedDate){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime theUpdatedDate = LocalDateTime.parse(lastUpdatedDate.toString(), formatter);
         LocalDateTime now = LocalDateTime.now();

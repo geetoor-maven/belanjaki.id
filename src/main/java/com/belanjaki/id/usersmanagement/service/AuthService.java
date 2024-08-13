@@ -10,8 +10,10 @@ import com.belanjaki.id.common.util.OtpUtils;
 import com.belanjaki.id.jwt.JWTUtils;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestCreateUserDTO;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestLoginUserDTO;
+import com.belanjaki.id.usersmanagement.dto.user.request.RequestOtpDTO;
 import com.belanjaki.id.usersmanagement.dto.user.response.ResponseCreateUserDTO;
 import com.belanjaki.id.usersmanagement.dto.user.response.ResponseLoginUserDTO;
+import com.belanjaki.id.usersmanagement.dto.user.response.ResponseLoginWithOtpDTO;
 import com.belanjaki.id.usersmanagement.model.MstOtpUserAuth;
 import com.belanjaki.id.usersmanagement.model.MstRole;
 import com.belanjaki.id.usersmanagement.model.MstUser;
@@ -31,7 +33,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.module.ResolutionException;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -58,7 +59,7 @@ public class AuthService implements UserDetailsService {
     @Transactional
     public Object registerUser(RequestCreateUserDTO dto){
         // validate if user has been register
-        userValidator.createUserValidatorIfHasBeenRegist(dto);
+        userValidator.createUserValidatorIfHasBeenRegister(dto);
 
         MstRole mstRole = mstRoleRepository.findByRoleName(RoleEnum.USER.getRoleName()).orElseThrow(() -> new ResolutionException(resourceLabel.getBodyLabel("role.find.not.found")));
         // Create new user using builder pattern
@@ -73,7 +74,6 @@ public class AuthService implements UserDetailsService {
 
     @Transactional
     public Object loginUser(RequestLoginUserDTO dto){
-
         log.info("User try {} to login ", dto.getEmail());
         MstUser userWithValidate = userValidator.getUserWithValidate(dto);
 
@@ -86,17 +86,20 @@ public class AuthService implements UserDetailsService {
             mstOtpUserAuthRepository.updateOtpSecretKey(secretOtp, Instant.now() ,mstOtpUserAuth.getOtpAuthId());
         }
 
-        final UserDetails userDetails = loadUserByUsername(dto.getEmail());
-        //final String jwt = jwtUtils.generateToken(userDetails);
-
         ResponseLoginUserDTO responseLoginUserDTO = createObjectResponseUserLogin(dto.getEmail());
-        BaseResponse<ResponseLoginUserDTO> baseResponse = new BaseResponse<>(responseLoginUserDTO, new Meta(ReturnCode.SUCCESSFULLY_LOGIN.getStatusCode(), ReturnCode.SUCCESSFULLY_LOGIN.getMessage()));
+        BaseResponse<ResponseLoginUserDTO> baseResponse = new BaseResponse<>(responseLoginUserDTO, new Meta(ReturnCode.SUCCESSFULLY_OTP_SEND.getStatusCode(), ReturnCode.SUCCESSFULLY_OTP_SEND.getMessage()));
         return baseResponse.getCustomizeResponse("otp_send");
     }
 
-    public Object validateOtpAfterLogin(){
+    public Object validateOtpAfterLogin(RequestOtpDTO requestOtpDTO){
+        userValidator.validateUserEmailWithOtp(requestOtpDTO);
 
-        return new Object();
+        final UserDetails userDetails = loadUserByUsername(requestOtpDTO.getEmail());
+        final String jwt = jwtUtils.generateToken(userDetails);
+
+        ResponseLoginWithOtpDTO responseLoginWithOtpDTO = createObjectResponseLoginWithOtp(jwt, requestOtpDTO.getEmail());
+        BaseResponse<ResponseLoginWithOtpDTO> baseResponse = new BaseResponse<>(responseLoginWithOtpDTO, new Meta(ReturnCode.SUCCESSFULLY_LOGIN.getStatusCode(), ReturnCode.SUCCESSFULLY_LOGIN.getMessage()));
+        return baseResponse.getCustomizeResponse("login");
     }
 
     private MstOtpUserAuth createObjectOtpUserAuth(MstUser mstUser){
@@ -110,6 +113,7 @@ public class AuthService implements UserDetailsService {
         mstOtpUserAuth.setUpdatedBy(mstUser.getName());
         return mstOtpUserAuth;
     }
+
     private MstUser createObjectUser(RequestCreateUserDTO dto, MstRole mstRole){
         MstUser mstUser = MstUser.builder()
                 .userId(UUID.randomUUID())
@@ -135,6 +139,13 @@ public class AuthService implements UserDetailsService {
         return ResponseLoginUserDTO.builder()
                 .email(email)
                 .message(resourceLabel.getBodyLabel("user.login.send.otp.success"))
+                .build();
+    }
+
+    private ResponseLoginWithOtpDTO createObjectResponseLoginWithOtp(String jwt, String email){
+        return ResponseLoginWithOtpDTO.builder()
+                .email(email)
+                .token(jwt)
                 .build();
     }
 
