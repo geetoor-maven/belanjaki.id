@@ -8,8 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @Repository
@@ -19,5 +18,5 @@ public interface MstOtpUserAuthRepository extends JpaRepository<MstOtpUserAuth, 
 
     @Modifying
     @Query(value = "update MstOtpUserAuth m set m.secretOtp = :secretOtp, m.updatedDate = :updateDate where m.otpAuthId = :otpUserAuthId")
-    void updateOtpSecretKey(@Param("secretOtp") String secretOtp, @Param("updateDate") Instant updatedDate, @Param("otpUserAuthId") UUID otpUserAuthId);
+    void updateOtpSecretKey(@Param("secretOtp") String secretOtp, @Param("updateDate") Date updatedDate, @Param("otpUserAuthId") UUID otpUserAuthId);
 }

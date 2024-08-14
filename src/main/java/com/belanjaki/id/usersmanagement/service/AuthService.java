@@ -33,8 +33,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.module.ResolutionException;
+import java.security.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 @Slf4j
@@ -82,8 +84,9 @@ public class AuthService implements UserDetailsService {
             mstOtpUserAuthRepository.save(createObjectOtpUserAuth(userWithValidate));
         }else {
             String otpBeforeHash = OtpUtils.generateOtp();
+            log.info("otp{} = ", otpBeforeHash);
             String secretOtp = passwordEncoder.encode(otpBeforeHash);
-            mstOtpUserAuthRepository.updateOtpSecretKey(secretOtp, Instant.now() ,mstOtpUserAuth.getOtpAuthId());
+            mstOtpUserAuthRepository.updateOtpSecretKey(secretOtp, new Date(),mstOtpUserAuth.getOtpAuthId());
         }
 
         ResponseLoginUserDTO responseLoginUserDTO = createObjectResponseUserLogin(dto.getEmail());
@@ -97,13 +100,14 @@ public class AuthService implements UserDetailsService {
         final UserDetails userDetails = loadUserByUsername(requestOtpDTO.getEmail());
         final String jwt = jwtUtils.generateToken(userDetails);
 
-        ResponseLoginWithOtpDTO responseLoginWithOtpDTO = createObjectResponseLoginWithOtp(jwt, requestOtpDTO.getEmail());
+        ResponseLoginWithOtpDTO responseLoginWithOtpDTO = createObjectResponseLoginWithOtp("jwt", requestOtpDTO.getEmail());
         BaseResponse<ResponseLoginWithOtpDTO> baseResponse = new BaseResponse<>(responseLoginWithOtpDTO, new Meta(ReturnCode.SUCCESSFULLY_LOGIN.getStatusCode(), ReturnCode.SUCCESSFULLY_LOGIN.getMessage()));
         return baseResponse.getCustomizeResponse("login");
     }
 
     private MstOtpUserAuth createObjectOtpUserAuth(MstUser mstUser){
         String otpBeforeHash = OtpUtils.generateOtp();
+        log.info("otp{} = ", otpBeforeHash);
         MstOtpUserAuth mstOtpUserAuth = MstOtpUserAuth.builder()
                 .otpAuthId(UUID.randomUUID())
                 .mstUser(mstUser)
