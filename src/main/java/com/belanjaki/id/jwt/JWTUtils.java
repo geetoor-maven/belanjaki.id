@@ -1,14 +1,24 @@
 package com.belanjaki.id.jwt;
 
+import com.belanjaki.id.common.constant.ReturnCode;
+import com.belanjaki.id.common.dto.BaseResponse;
+import com.belanjaki.id.common.dto.ErrorObjectDTO;
+import com.belanjaki.id.common.dto.Meta;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +27,13 @@ import java.util.function.Function;
 
 @Component
 public class JWTUtils {
+
+
+    // token JWT yang dihasilkan akan berlaku selama 1 hari
+    //private static final long JWT_TOKEN_VALID = 24 * 60 * 60 * 1000L;
+
+    // buat test ( token 5 menit )
+    private static final long JWT_TOKEN_VALID = 5 * 60;
 
     @Value("${secretkey}")
     private String SECRET_KEY;
@@ -58,7 +75,7 @@ public class JWTUtils {
                 .setClaims(extraClaims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24)) // 1 day
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALID * 1000))
                 .signWith(getSignInMethod(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -68,11 +85,26 @@ public class JWTUtils {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public void generateResponseIfHaveBeenLogout(HttpServletResponse httpResponse) throws IOException {
+        httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        httpResponse.setStatus(HttpServletResponse.SC_OK);
+
+        ErrorObjectDTO dto = new ErrorObjectDTO();
+        dto.setMessage(ReturnCode.UNAUTHORIZED.getMessage());
+        dto.setStatusCode(ReturnCode.UNAUTHORIZED.getStatusCode());
+        dto.setTimeStamp(new Date());
+
+        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(dto, new Meta(ReturnCode.UNAUTHORIZED.getStatusCode(), HttpStatus.UNAUTHORIZED.getReasonPhrase()));
+
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(httpResponse.getOutputStream(), baseResponse.getCustomizeResponse("unauthorized"));
     }
 }
