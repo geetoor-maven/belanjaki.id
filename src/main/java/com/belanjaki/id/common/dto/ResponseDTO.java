@@ -10,8 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ResponseDTO {
-
-    private Integer status;
     private String message;
-
 }

@@ -10,6 +10,8 @@ public enum ReturnCode {
     SUCCESSFULLY_LOGIN(200, "You have successfully login."),
     SUCCESSFULLY_OTP_SEND(200, "Otp send successfully"),
     SUCCESSFULLY_REGISTER(200, "You have successfully registered."),
+    SUCCESSFULLY_UPDATE_ADDRESS(200, "You have successfully update address."),
+    SUCCESSFULLY_GET_DATA(200, "Successfully get data"),
 
     BAD_REQUEST(400, "Bad Request"),
     FAILED_BAD_REQUEST(400, "Request Tidak Sesuai"),

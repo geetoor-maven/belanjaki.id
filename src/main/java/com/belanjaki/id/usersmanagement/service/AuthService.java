@@ -100,7 +100,7 @@ public class AuthService implements UserDetailsService {
         final UserDetails userDetails = loadUserByUsername(requestOtpDTO.getEmail());
         final String jwt = jwtUtils.generateToken(userDetails);
 
-        ResponseLoginWithOtpDTO responseLoginWithOtpDTO = createObjectResponseLoginWithOtp("jwt", requestOtpDTO.getEmail());
+        ResponseLoginWithOtpDTO responseLoginWithOtpDTO = createObjectResponseLoginWithOtp(jwt, requestOtpDTO.getEmail());
         BaseResponse<ResponseLoginWithOtpDTO> baseResponse = new BaseResponse<>(responseLoginWithOtpDTO, new Meta(ReturnCode.SUCCESSFULLY_LOGIN.getStatusCode(), ReturnCode.SUCCESSFULLY_LOGIN.getMessage()));
         return baseResponse.getCustomizeResponse("login");
     }
