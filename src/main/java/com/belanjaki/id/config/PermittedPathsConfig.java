@@ -15,6 +15,7 @@ public class PermittedPathsConfig {
         permittedPaths.add("/api/v1/user/create");
         permittedPaths.add("/api/v1/user/login");
         permittedPaths.add("/api/v1/user/validate-otp");
+        permittedPaths.add("/api/v1/user/resend-otp");
         permittedPaths.add("/swagger-ui/index.html");
         permittedPaths.add("/swagger-resources/**");
         permittedPaths.add("/v3/api-docs/**");

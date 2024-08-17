@@ -32,6 +32,15 @@ public class AuthController {
     }
 
     @PostMapping(
+            path = BasePath.USER + "/resend-otp",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> resendOtp(@Valid @RequestBody RequestLoginUserDTO dto){
+        return new ResponseEntity<>(authService.resendOtp(dto), HttpStatus.OK);
+    }
+
+    @PostMapping(
             path = BasePath.USER + "/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE

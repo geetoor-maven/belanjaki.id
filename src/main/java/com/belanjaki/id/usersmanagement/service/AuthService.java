@@ -76,19 +76,8 @@ public class AuthService implements UserDetailsService {
 
     @Transactional
     public Object loginUser(RequestLoginUserDTO dto){
-        log.info("User try {} to login ", dto.getEmail());
         MstUser userWithValidate = userValidator.getUserWithValidate(dto);
-
-        MstOtpUserAuth mstOtpUserAuth = mstOtpUserAuthRepository.findByMstUser(userWithValidate);
-        if (mstOtpUserAuth == null){
-            mstOtpUserAuthRepository.save(createObjectOtpUserAuth(userWithValidate));
-        }else {
-            String otpBeforeHash = OtpUtils.generateOtp();
-            log.info("otp{} = ", otpBeforeHash);
-            String secretOtp = passwordEncoder.encode(otpBeforeHash);
-            mstOtpUserAuthRepository.updateOtpSecretKey(secretOtp, new Date(),mstOtpUserAuth.getOtpAuthId());
-        }
-
+        handleOtpUserAuthentication(userWithValidate);
         ResponseLoginUserDTO responseLoginUserDTO = createObjectResponseUserLogin(dto.getEmail());
         BaseResponse<ResponseLoginUserDTO> baseResponse = new BaseResponse<>(responseLoginUserDTO, new Meta(ReturnCode.SUCCESSFULLY_OTP_SEND.getStatusCode(), ReturnCode.SUCCESSFULLY_OTP_SEND.getMessage()));
         return baseResponse.getCustomizeResponse("otp_send");
@@ -103,6 +92,15 @@ public class AuthService implements UserDetailsService {
         ResponseLoginWithOtpDTO responseLoginWithOtpDTO = createObjectResponseLoginWithOtp(jwt, requestOtpDTO.getEmail());
         BaseResponse<ResponseLoginWithOtpDTO> baseResponse = new BaseResponse<>(responseLoginWithOtpDTO, new Meta(ReturnCode.SUCCESSFULLY_LOGIN.getStatusCode(), ReturnCode.SUCCESSFULLY_LOGIN.getMessage()));
         return baseResponse.getCustomizeResponse("login");
+    }
+
+    @Transactional
+    public Object resendOtp(RequestLoginUserDTO dto){
+        MstUser userWithValidate = userValidator.getUserWithValidate(dto);
+        handleOtpUserAuthentication(userWithValidate);
+        ResponseLoginUserDTO responseLoginUserDTO = createObjectResponseUserLogin(dto.getEmail());
+        BaseResponse<ResponseLoginUserDTO> baseResponse = new BaseResponse<>(responseLoginUserDTO, new Meta(ReturnCode.SUCCESSFULLY_OTP_SEND.getStatusCode(), ReturnCode.SUCCESSFULLY_OTP_SEND.getMessage()));
+        return baseResponse.getCustomizeResponse("otp_send");
     }
 
     private MstOtpUserAuth createObjectOtpUserAuth(MstUser mstUser){
@@ -152,6 +150,20 @@ public class AuthService implements UserDetailsService {
                 .token(jwt)
                 .build();
     }
+
+    public void handleOtpUserAuthentication(MstUser userWithValidate) {
+        MstOtpUserAuth mstOtpUserAuth = mstOtpUserAuthRepository.findByMstUser(userWithValidate);
+
+        if (mstOtpUserAuth == null) {
+            mstOtpUserAuthRepository.save(createObjectOtpUserAuth(userWithValidate));
+        } else {
+            String otpBeforeHash = OtpUtils.generateOtp();
+            log.info("Generated OTP: {}", otpBeforeHash);
+            String secretOtp = passwordEncoder.encode(otpBeforeHash);
+            mstOtpUserAuthRepository.updateOtpSecretKey(secretOtp, new Date(), mstOtpUserAuth.getOtpAuthId());
+        }
+    }
+
 
     public MstUser getUserLogin(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
