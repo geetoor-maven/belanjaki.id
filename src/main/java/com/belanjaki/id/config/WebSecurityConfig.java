@@ -1,8 +1,10 @@
 package com.belanjaki.id.config;
 
+import com.belanjaki.id.common.ResourceLabel;
 import com.belanjaki.id.common.exception.JwtAuthEntryPointException;
 import com.belanjaki.id.jwt.JWTRequestFilter;
 import com.belanjaki.id.jwt.JWTUtils;
+import com.belanjaki.id.usersmanagement.repository.MstRoleRepository;
 import com.belanjaki.id.usersmanagement.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,10 +29,12 @@ public class WebSecurityConfig {
 
     private final Set<String> permittedPaths;
     private final JwtAuthEntryPointException jwtAuthEntryPointException;
+    private final MstRoleRepository mstRoleRepository;
+    private final ResourceLabel resourceLabel;
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http, AuthService userService, JWTUtils jwtUtil) throws Exception {
-        JWTRequestFilter jwtRequestFilter = new JWTRequestFilter(userService, jwtUtil);
+        JWTRequestFilter jwtRequestFilter = new JWTRequestFilter(userService, jwtUtil, mstRoleRepository, resourceLabel);
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .exceptionHandling(exceptionHandling ->

@@ -23,6 +23,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -30,13 +31,23 @@ public class JWTUtils {
 
 
     // token JWT yang dihasilkan akan berlaku selama 1 hari
-    //private static final long JWT_TOKEN_VALID = 24 * 60 * 60 * 1000L;
+    private static final long JWT_TOKEN_VALID = 24 * 60 * 60 * 1000L;
 
     // buat test ( token 5 menit )
-    private static final long JWT_TOKEN_VALID = 5 * 60;
+    //private static final long JWT_TOKEN_VALID = 5 * 60;
 
     @Value("${secretkey}")
     private String SECRET_KEY;
+
+    public String getAppIdFromJwt(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSignInMethod())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("app_id", String.class);
+    }
 
     // extract username from result extractClaim
     public String extractUsername(String token) {
@@ -64,9 +75,9 @@ public class JWTUtils {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, UUID role) {
         Map<String, Object> claims = new HashMap<>();
-        //claims.put("role", "USER");
+        claims.put("app_id", role);
         return createToken(claims, userDetails.getUsername());
     }
 

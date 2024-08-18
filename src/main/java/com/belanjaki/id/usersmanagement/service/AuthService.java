@@ -7,6 +7,7 @@ import com.belanjaki.id.common.dto.BaseResponse;
 import com.belanjaki.id.common.dto.Meta;
 import com.belanjaki.id.common.exception.ResourceNotFoundException;
 import com.belanjaki.id.common.util.OtpUtils;
+import com.belanjaki.id.common.util.RoleIdGetUtils;
 import com.belanjaki.id.jwt.JWTUtils;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestCreateUserDTO;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestLoginUserDTO;
@@ -27,14 +28,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.module.ResolutionException;
-import java.security.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -42,7 +40,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class AuthService implements UserDetailsService {
+public class AuthService {
 
     private final MstUserRepository mstUserRepository;
     private final MstRoleRepository mstRoleRepository;
@@ -51,11 +49,15 @@ public class AuthService implements UserDetailsService {
     private final UserValidator userValidator;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JWTUtils jwtUtils;
+    private final RoleIdGetUtils roleIdGetUtils;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        MstUser mstUser = mstUserRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException(resourceLabel.getBodyLabel("user.find.email.not.found")));
-        return new org.springframework.security.core.userdetails.User(mstUser.getEmail(), mstUser.getPassword(), new ArrayList<>());
+
+    public UserDetails loadUserByUsernameRole(String username, String role) throws UsernameNotFoundException {
+        if (role.equalsIgnoreCase(RoleEnum.USER.getRoleName())){
+            MstUser mstUser = mstUserRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException(resourceLabel.getBodyLabel("user.find.email.not.found")));
+            return new org.springframework.security.core.userdetails.User(mstUser.getEmail(), mstUser.getPassword(), new ArrayList<>());
+        }
+        return null;
     }
 
     @Transactional
@@ -86,8 +88,8 @@ public class AuthService implements UserDetailsService {
     public Object validateOtpAfterLogin(RequestOtpDTO requestOtpDTO){
         userValidator.validateUserEmailWithOtp(requestOtpDTO);
 
-        final UserDetails userDetails = loadUserByUsername(requestOtpDTO.getEmail());
-        final String jwt = jwtUtils.generateToken(userDetails);
+        final UserDetails userDetails = loadUserByUsernameRole(requestOtpDTO.getEmail(), RoleEnum.USER.getRoleName());
+        final String jwt = jwtUtils.generateToken(userDetails, roleIdGetUtils.getRoleID(RoleEnum.USER.getRoleName()));
 
         ResponseLoginWithOtpDTO responseLoginWithOtpDTO = createObjectResponseLoginWithOtp(jwt, requestOtpDTO.getEmail());
         BaseResponse<ResponseLoginWithOtpDTO> baseResponse = new BaseResponse<>(responseLoginWithOtpDTO, new Meta(ReturnCode.SUCCESSFULLY_LOGIN.getStatusCode(), ReturnCode.SUCCESSFULLY_LOGIN.getMessage()));
