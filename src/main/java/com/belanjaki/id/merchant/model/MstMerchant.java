@@ -44,9 +44,6 @@ public class MstMerchant extends BaseEntity implements Serializable {
     @Column(name = "description")
     private String desc;
 
-    @Column(name = "is_approve")
-    private boolean isApprove;
-
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private MstRole mstRole;

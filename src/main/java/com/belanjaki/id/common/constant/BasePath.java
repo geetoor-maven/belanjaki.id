@@ -6,4 +6,7 @@ public interface BasePath {
 
     // user path
     String USER = BASE_API + "/user";
+
+    // merchant path
+    String MERCHANT = BASE_API + "/merchant";
 }
