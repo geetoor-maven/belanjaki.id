@@ -1,6 +1,7 @@
 package com.belanjaki.id.jwt;
 
 import com.belanjaki.id.common.ResourceLabel;
+import com.belanjaki.id.common.constant.RoleEnum;
 import com.belanjaki.id.common.exception.ResourceNotFoundException;
 import com.belanjaki.id.usersmanagement.model.MstRole;
 import com.belanjaki.id.usersmanagement.repository.MstRoleRepository;
@@ -21,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Component
@@ -31,6 +33,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     private final JWTUtils jwtUtils;
     private final MstRoleRepository mstRoleRepository;
     private final ResourceLabel resourceLabel;
+    private final Set<String> permittedPathsExceptAdmin;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -52,6 +55,13 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             }else {
                 throw new ResourceNotFoundException(resourceLabel.getBodyLabel("invalid.crediantial"));
             }
+
+            // validasi request auth selain user admin, tidak bisa akses endpoint permittedPathExceptAdmin
+            if (permittedPathsExceptAdmin.contains(request.getRequestURI()) && !roleName.contains(RoleEnum.ADMIN.getRoleName())) {
+                jwtUtils.generateResponseAccessDenied(response);
+                return;
+            }
+
 
         }
 

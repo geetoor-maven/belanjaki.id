@@ -28,13 +28,14 @@ import java.util.Set;
 public class WebSecurityConfig {
 
     private final Set<String> permittedPaths;
+    private final Set<String> permittedPathsExceptAdmin;
     private final JwtAuthEntryPointException jwtAuthEntryPointException;
     private final MstRoleRepository mstRoleRepository;
     private final ResourceLabel resourceLabel;
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http, AuthService userService, JWTUtils jwtUtil) throws Exception {
-        JWTRequestFilter jwtRequestFilter = new JWTRequestFilter(userService, jwtUtil, mstRoleRepository, resourceLabel);
+        JWTRequestFilter jwtRequestFilter = new JWTRequestFilter(userService, jwtUtil, mstRoleRepository, resourceLabel, permittedPathsExceptAdmin);
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .exceptionHandling(exceptionHandling ->
