@@ -10,8 +10,6 @@ import com.belanjaki.id.common.constant.ReturnCode;
 import com.belanjaki.id.common.constant.RoleEnum;
 import com.belanjaki.id.common.dto.BaseResponse;
 import com.belanjaki.id.common.dto.Meta;
-import com.belanjaki.id.merchant.dto.response.ResponseCreateMerchantDTO;
-import com.belanjaki.id.merchant.model.MstMerchant;
 import com.belanjaki.id.usersmanagement.model.MstRole;
 import com.belanjaki.id.usersmanagement.repository.MstRoleRepository;
 import lombok.RequiredArgsConstructor;
