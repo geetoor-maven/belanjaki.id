@@ -25,7 +25,7 @@ public class AdminValidator {
         });
     }
 
-    public void validateLoginAdmin(RequestLoginAdminDTO dto){
+    public MstAdministrator validateLoginAdmin(RequestLoginAdminDTO dto){
         MstAdministrator mstAdministrator = mstAdministratorRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new ResourceNotFoundException(resourceLabel.getBodyLabel("admin.find.email.not.found")));
         boolean pwdMatch = passwordEncoder.matches(dto.getPassword(), mstAdministrator.getPassword());
         if (!pwdMatch){
@@ -34,6 +34,7 @@ public class AdminValidator {
         if (!dto.getAdminNumber().equalsIgnoreCase(mstAdministrator.getAdminNumber())){
             throw new ResourceNotFoundException(resourceLabel.getBodyLabel("admin.validate.number.not.valid"));
         }
+        return mstAdministrator;
     }
 
 }

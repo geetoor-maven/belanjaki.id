@@ -12,7 +12,11 @@ public class PermittedPathsConfig {
     @Bean
     public Set<String> permittedPaths() {
         Set<String> permittedPaths = new HashSet<>();
+
+        // admin
         permittedPaths.add("/api/v1/admin/create");
+        permittedPaths.add("/api/v1/admin/login");
+
         permittedPaths.add("/api/v1/user/create");
         permittedPaths.add("/api/v1/user/login");
         permittedPaths.add("/api/v1/user/validate-otp");
