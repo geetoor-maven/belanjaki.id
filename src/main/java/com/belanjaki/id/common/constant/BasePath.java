@@ -9,4 +9,7 @@ public interface BasePath {
 
     // merchant path
     String MERCHANT = BASE_API + "/merchant";
+
+    // admin path
+    String ADMIN = BASE_API + "/admin";
 }

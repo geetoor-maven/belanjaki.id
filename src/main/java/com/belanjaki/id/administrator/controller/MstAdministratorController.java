@@ -1,8 +1,8 @@
-package com.belanjaki.id.merchant.controller;
+package com.belanjaki.id.administrator.controller;
 
+import com.belanjaki.id.administrator.dto.request.RequestCreateAdminDTO;
+import com.belanjaki.id.administrator.service.MstAdministratorService;
 import com.belanjaki.id.common.constant.BasePath;
-import com.belanjaki.id.merchant.dto.request.RequestCreateMerchantDTO;
-import com.belanjaki.id.merchant.service.MstMerchantService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -13,20 +13,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Merchant API", description = "Merchant Rest API")
+@Tag(name = "Administrator API", description = "Administrator Rest API")
 @RestController
 @AllArgsConstructor
-public class MstMerchantController {
+public class MstAdministratorController {
 
-    private final MstMerchantService mstMerchantService;
+    private final MstAdministratorService mstAdministratorService;
 
     @PostMapping(
-            path = BasePath.MERCHANT + "/create",
+            path = BasePath.ADMIN + "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> createMerchant(@Valid @RequestBody RequestCreateMerchantDTO dto){
-        return new ResponseEntity<>(mstMerchantService.createMerchant(dto), HttpStatus.OK);
+    public ResponseEntity<Object> createAdministrator(@Valid @RequestBody RequestCreateAdminDTO dto){
+        return new ResponseEntity<>(mstAdministratorService.createAdmin(dto), HttpStatus.OK);
     }
-
 }
