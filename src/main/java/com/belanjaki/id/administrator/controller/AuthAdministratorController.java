@@ -1,6 +1,7 @@
 package com.belanjaki.id.administrator.controller;
 
 import com.belanjaki.id.administrator.dto.request.RequestLoginAdminDTO;
+import com.belanjaki.id.administrator.dto.request.RequestValidationOTPAdminDTO;
 import com.belanjaki.id.administrator.service.AuthAdministratorService;
 import com.belanjaki.id.common.constant.BasePath;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +28,15 @@ public class AuthAdministratorController {
     )
     public ResponseEntity<Object> createAdministrator(@Valid @RequestBody RequestLoginAdminDTO dto){
         return new ResponseEntity<>(authAdministratorService.loginAdministrator(dto), HttpStatus.OK);
+    }
+
+    @PostMapping(
+            path = BasePath.ADMIN + "/validate-otp",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> validateOtpAdmin(@Valid @RequestBody RequestValidationOTPAdminDTO dto){
+        return new ResponseEntity<>(authAdministratorService.validateOtpAfterLoginAdmin(dto), HttpStatus.OK);
     }
 
 }

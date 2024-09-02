@@ -1,5 +1,7 @@
 package com.belanjaki.id.usersmanagement.service;
 
+import com.belanjaki.id.administrator.model.MstAdministrator;
+import com.belanjaki.id.administrator.repository.MstAdministratorRepository;
 import com.belanjaki.id.common.ResourceLabel;
 import com.belanjaki.id.common.constant.ReturnCode;
 import com.belanjaki.id.common.constant.RoleEnum;
@@ -42,6 +44,7 @@ import java.util.UUID;
 @Service
 public class AuthService {
 
+    private final MstAdministratorRepository mstAdministratorRepository;
     private final MstUserRepository mstUserRepository;
     private final MstRoleRepository mstRoleRepository;
     private final MstOtpUserAuthRepository mstOtpUserAuthRepository;
@@ -56,6 +59,9 @@ public class AuthService {
         if (role.equalsIgnoreCase(RoleEnum.USER.getRoleName())){
             MstUser mstUser = mstUserRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException(resourceLabel.getBodyLabel("user.find.email.not.found")));
             return new org.springframework.security.core.userdetails.User(mstUser.getEmail(), mstUser.getPassword(), new ArrayList<>());
+        }else if (role.equalsIgnoreCase(RoleEnum.ADMIN.getRoleName())){
+            MstAdministrator mstAdministrator = mstAdministratorRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException(resourceLabel.getBodyLabel("admin.find.email.not.found")));
+            return new org.springframework.security.core.userdetails.User(mstAdministrator.getEmail(), mstAdministrator.getPassword(), new ArrayList<>());
         }
         return null;
     }
