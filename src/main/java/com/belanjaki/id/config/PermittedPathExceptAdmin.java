@@ -12,7 +12,7 @@ public class PermittedPathExceptAdmin {
     @Bean
     public Set<String> permittedPathsExceptAdmin() {
         Set<String> permittedPaths = new HashSet<>();
-        permittedPaths.add("/api/v1/merchant/create");
+        permittedPaths.add("/api/v1/merchant/list");
         return permittedPaths;
     }
 }

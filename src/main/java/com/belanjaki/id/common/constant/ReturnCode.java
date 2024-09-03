@@ -17,6 +17,7 @@ public enum ReturnCode {
     FAILED_BAD_REQUEST(400, "Request Tidak Sesuai"),
     UNAUTHORIZED(401, "Invalid credentials"),
     ACCESS_DENIED(403, "Access Denied"),
+    NOT_ADMIN(403, "Your are not administrator"),
     DATA_NOT_FOUND(404, "Not found."),
     FAILED_DATA_ALREADY_EXISTS(409, "Duplicate registration: You are already registered.");
 

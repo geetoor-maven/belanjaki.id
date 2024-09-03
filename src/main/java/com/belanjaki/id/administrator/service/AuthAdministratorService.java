@@ -55,7 +55,7 @@ public class AuthAdministratorService {
         adminValidator.validateEmailAndNumberAdminWithOtp(dto);
 
         final UserDetails userDetails = authService.loadUserByUsernameRole(dto.getEmail(), RoleEnum.ADMIN.getRoleName());
-        final String jwt = jwtUtils.generateToken(userDetails, roleIdGetUtils.getRoleID(RoleEnum.USER.getRoleName()));
+        final String jwt = jwtUtils.generateToken(userDetails, roleIdGetUtils.getRoleID(RoleEnum.ADMIN.getRoleName()));
 
         ResponseLoginWithOTPAdminDTO responseLoginWithOTPAdminDTO = createObjectResponseLoginWithOTPAdmin(jwt, dto.getEmail());
         BaseResponse<ResponseLoginWithOTPAdminDTO> baseResponse = new BaseResponse<>(responseLoginWithOTPAdminDTO, new Meta(ReturnCode.SUCCESSFULLY_LOGIN.getStatusCode(), ReturnCode.SUCCESSFULLY_LOGIN.getMessage()));

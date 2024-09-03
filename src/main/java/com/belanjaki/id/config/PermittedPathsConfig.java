@@ -16,11 +16,17 @@ public class PermittedPathsConfig {
         // admin
         permittedPaths.add("/api/v1/admin/create");
         permittedPaths.add("/api/v1/admin/login");
+        permittedPaths.add("/api/v1/admin/validate-otp");
 
+        // user
         permittedPaths.add("/api/v1/user/create");
         permittedPaths.add("/api/v1/user/login");
         permittedPaths.add("/api/v1/user/validate-otp");
         permittedPaths.add("/api/v1/user/resend-otp");
+
+        // merchant
+        permittedPaths.add("/api/v1/merchant/create");
+
         permittedPaths.add("/swagger-ui/index.html");
         permittedPaths.add("/swagger-resources/**");
         permittedPaths.add("/v3/api-docs/**");

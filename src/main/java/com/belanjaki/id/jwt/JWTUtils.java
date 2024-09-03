@@ -124,11 +124,11 @@ public class JWTUtils {
         httpResponse.setStatus(HttpServletResponse.SC_OK);
 
         ErrorObjectDTO dto = new ErrorObjectDTO();
-        dto.setMessage(ReturnCode.ACCESS_DENIED.getMessage());
-        dto.setStatusCode(ReturnCode.ACCESS_DENIED.getStatusCode());
+        dto.setMessage(ReturnCode.NOT_ADMIN.getMessage());
+        dto.setStatusCode(ReturnCode.NOT_ADMIN.getStatusCode());
         dto.setTimeStamp(new Date());
 
-        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(dto, new Meta(ReturnCode.ACCESS_DENIED.getStatusCode(), ReturnCode.ACCESS_DENIED.getMessage()));
+        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(dto, new Meta(ReturnCode.NOT_ADMIN.getStatusCode(), ReturnCode.NOT_ADMIN.getMessage()));
 
         final ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(httpResponse.getOutputStream(), baseResponse.getCustomizeResponse("access_denied"));

@@ -9,9 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Merchant API", description = "Merchant Rest API")
 @RestController
@@ -27,6 +25,16 @@ public class MstMerchantController {
     )
     public ResponseEntity<Object> createMerchant(@Valid @RequestBody RequestCreateMerchantDTO dto){
         return new ResponseEntity<>(mstMerchantService.createMerchant(dto), HttpStatus.OK);
+    }
+
+
+    @GetMapping(
+            path = BasePath.MERCHANT + "/list"
+    )
+    public ResponseEntity<Object> getListMerchantsByStatus(@RequestParam(value = "status", required = false) String status,
+                                                            @RequestParam(defaultValue = "1") int page,
+                                                            @RequestParam(defaultValue = "10") int size){
+        return new ResponseEntity<>(mstMerchantService.getListMerchantsByStatus(status, page, size), HttpStatus.OK);
     }
 
 }
