@@ -12,6 +12,7 @@ public enum ReturnCode {
     SUCCESSFULLY_REGISTER(200, "You have successfully registered."),
     SUCCESSFULLY_UPDATE_ADDRESS(200, "You have successfully update address."),
     SUCCESSFULLY_GET_DATA(200, "Successfully get data"),
+    SUCCESSFULLY_UPDATED(200, "Successfully update data"),
 
     BAD_REQUEST(400, "Bad Request"),
     FAILED_BAD_REQUEST(400, "Request Tidak Sesuai"),
@@ -19,6 +20,7 @@ public enum ReturnCode {
     ACCESS_DENIED(403, "Access Denied"),
     NOT_ADMIN(403, "Your are not administrator"),
     DATA_NOT_FOUND(404, "Not found."),
+    SOMETHING_WRONG(409, "Something wrong"),
     FAILED_DATA_ALREADY_EXISTS(409, "Duplicate registration: You are already registered.");
 
     private final int statusCode;

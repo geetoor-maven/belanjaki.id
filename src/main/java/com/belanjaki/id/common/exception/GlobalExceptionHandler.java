@@ -28,11 +28,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NeedApprovalException.class)
     public ResponseEntity<Object> handleNeedApproval(NeedApprovalException ex, WebRequest request){
         ErrorObjectDTO theErrorObject = new ErrorObjectDTO();
-        theErrorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        theErrorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
         theErrorObject.setMessage(ex.getMessage());
         theErrorObject.setTimeStamp(new Date());
-        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(theErrorObject, new Meta(ReturnCode.BAD_REQUEST.getStatusCode(), ReturnCode.BAD_REQUEST.getMessage()));
-        return new ResponseEntity<>(baseResponse.getCustomizeResponse("error"), HttpStatus.BAD_REQUEST);
+        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(theErrorObject, new Meta(ReturnCode.DATA_NOT_FOUND.getStatusCode(), ReturnCode.DATA_NOT_FOUND.getMessage()));
+        return new ResponseEntity<>(baseResponse.getCustomizeResponse("error"), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(OtpValidationException.class)
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         theErrorObject.setStatusCode(HttpStatus.CONFLICT.value());
         theErrorObject.setMessage(ex.getMessage());
         theErrorObject.setTimeStamp(new Date());
-        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(theErrorObject, new Meta(ReturnCode.FAILED_DATA_ALREADY_EXISTS.getStatusCode(), ReturnCode.FAILED_DATA_ALREADY_EXISTS.getMessage()));
+        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(theErrorObject, new Meta(ReturnCode.SOMETHING_WRONG.getStatusCode(), ReturnCode.SOMETHING_WRONG.getMessage()));
         return new ResponseEntity<>(baseResponse.getCustomizeResponse("error"), HttpStatus.CONFLICT);
     }
 

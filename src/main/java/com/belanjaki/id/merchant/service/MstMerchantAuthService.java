@@ -40,7 +40,7 @@ public class MstMerchantAuthService {
 
     @Transactional
     public Object loginMerchant(RequestMerchantLoginDTO dto){
-        MstMerchant mstMerchant = merchantValidator.getMerchantWithValidatorLogin(dto);
+        MstMerchant mstMerchant = merchantValidator.getMerchantWithValidatorLoginAndNoNeedForApp(dto);
         handleOtpMerchant(mstMerchant);
         ResponseLoginMerchantDTO responseLoginMerchantDTO = createObjectResponseLoginMerchant(mstMerchant.getEmail());
         BaseResponse<ResponseLoginMerchantDTO> baseResponse = new BaseResponse<>(responseLoginMerchantDTO, new Meta(ReturnCode.SUCCESSFULLY_OTP_SEND.getStatusCode(), ReturnCode.SUCCESSFULLY_OTP_SEND.getMessage()));

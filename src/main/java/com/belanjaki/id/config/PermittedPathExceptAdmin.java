@@ -13,6 +13,7 @@ public class PermittedPathExceptAdmin {
     public Set<String> permittedPathsExceptAdmin() {
         Set<String> permittedPaths = new HashSet<>();
         permittedPaths.add("/api/v1/merchant/list");
+        permittedPaths.add("/api/v1/merchant/update-status");
         return permittedPaths;
     }
 }

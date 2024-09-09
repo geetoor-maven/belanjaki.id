@@ -7,7 +7,10 @@ import com.belanjaki.id.common.constant.RoleEnum;
 import com.belanjaki.id.common.dto.BaseResponse;
 import com.belanjaki.id.common.dto.Meta;
 import com.belanjaki.id.common.dto.PaginationResponse;
+import com.belanjaki.id.common.dto.ResponseDTO;
+import com.belanjaki.id.common.exception.ItemAlreadyExistException;
 import com.belanjaki.id.merchant.constant.MerchantStatus;
+import com.belanjaki.id.merchant.dto.request.RequestApproveMerchantDTO;
 import com.belanjaki.id.merchant.dto.request.RequestCreateMerchantDTO;
 import com.belanjaki.id.merchant.dto.response.ResponseCreateMerchantDTO;
 import com.belanjaki.id.merchant.dto.response.ResponseMerchantListDTO;
@@ -16,12 +19,14 @@ import com.belanjaki.id.merchant.repository.MstMerchantRepository;
 import com.belanjaki.id.merchant.validator.MerchantValidator;
 import com.belanjaki.id.usersmanagement.model.MstRole;
 import com.belanjaki.id.usersmanagement.repository.MstRoleRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.module.ResolutionException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -79,6 +84,27 @@ public class MstMerchantService {
         PaginationResponse<ResponseMerchantListDTO> paginationResponse = new PaginationResponse<ResponseMerchantListDTO>(merchantListDTOS, totalItems, size, page, totalPages, nextPageUrl, prevPageUrl);
         BaseResponse<PaginationResponse<ResponseMerchantListDTO>> baseResponse = new BaseResponse<>(paginationResponse, new Meta(ReturnCode.SUCCESSFULLY_GET_DATA.getStatusCode(), ReturnCode.SUCCESSFULLY_GET_DATA.getMessage()));
         return baseResponse.getCustomizeResponse("merchants");
+    }
+
+    @Transactional
+    public Object approveMerchant(RequestApproveMerchantDTO dto){
+        MstMerchant merchant = merchantValidator.getMerchantWithId(dto.getIdMerchant());
+
+        if (!merchant.getStatus().equalsIgnoreCase(MerchantStatus.FOR_APPROVAL.getCode())){
+            throw new ItemAlreadyExistException(resourceLabel.getBodyLabel("merchant.is.have.been.approved"));
+        }
+
+        String status = MerchantStatus.APPROVE.getCode();
+        mstMerchantRepository.updateStatusMerchant(
+                merchant.getMerchantId(),
+                status,
+                new Date(),
+                "administrator"
+        );
+
+        ResponseDTO responseDTO = new ResponseDTO("Successfully updated merchant status");
+        BaseResponse<ResponseDTO> baseResponse = new BaseResponse<>(responseDTO, new Meta(ReturnCode.SUCCESSFULLY_UPDATED.getStatusCode(), ReturnCode.SUCCESSFULLY_UPDATED.getMessage()));
+        return baseResponse.getCustomizeResponse("update_status");
     }
 
     public Object getMerchant(UUID merchantID){

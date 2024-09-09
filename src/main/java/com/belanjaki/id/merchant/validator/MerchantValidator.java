@@ -3,7 +3,9 @@ package com.belanjaki.id.merchant.validator;
 
 import com.belanjaki.id.common.ResourceLabel;
 import com.belanjaki.id.common.exception.ItemAlreadyExistException;
+import com.belanjaki.id.common.exception.NeedApprovalException;
 import com.belanjaki.id.common.exception.ResourceNotFoundException;
+import com.belanjaki.id.merchant.constant.MerchantStatus;
 import com.belanjaki.id.merchant.dto.request.RequestCreateMerchantDTO;
 import com.belanjaki.id.merchant.dto.request.RequestMerchantLoginDTO;
 import com.belanjaki.id.merchant.model.MstMerchant;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @AllArgsConstructor
@@ -22,9 +25,17 @@ public class MerchantValidator {
     private final ResourceLabel resourceLabel;
     private final PasswordEncoder passwordEncoder;
 
-    public MstMerchant getMerchantWithValidatorLogin(RequestMerchantLoginDTO dto) {
+    public MstMerchant getMerchantWithId(String merchantId) {
+        return mstMerchantRepository.findById(UUID.fromString(merchantId)).orElseThrow(() ->
+                new ResourceNotFoundException(resourceLabel.getBodyLabel("merchant.not.found")));
+    }
+
+    public MstMerchant getMerchantWithValidatorLoginAndNoNeedForApp(RequestMerchantLoginDTO dto) {
         MstMerchant mstMerchant = mstMerchantRepository.findByEmail(dto.getEmail()).orElseThrow(() ->
                 new ResourceNotFoundException(resourceLabel.getBodyLabel("merchant.find.email.not.found")));
+        if (mstMerchant.getStatus().equalsIgnoreCase(MerchantStatus.FOR_APPROVAL.getCode())){
+            throw new NeedApprovalException(resourceLabel.getBodyLabel("merchant.is.not.yet.approved"));
+        }
         boolean isPasswordMatch = passwordEncoder.matches(dto.getPassword(), mstMerchant.getPassword());
         if (!isPasswordMatch){
             throw new ResourceNotFoundException(resourceLabel.getBodyLabel("user.password.validation.not.valid"));
