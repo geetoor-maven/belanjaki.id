@@ -22,11 +22,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.module.ResolutionException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -81,6 +79,10 @@ public class MstMerchantService {
         PaginationResponse<ResponseMerchantListDTO> paginationResponse = new PaginationResponse<ResponseMerchantListDTO>(merchantListDTOS, totalItems, size, page, totalPages, nextPageUrl, prevPageUrl);
         BaseResponse<PaginationResponse<ResponseMerchantListDTO>> baseResponse = new BaseResponse<>(paginationResponse, new Meta(ReturnCode.SUCCESSFULLY_GET_DATA.getStatusCode(), ReturnCode.SUCCESSFULLY_GET_DATA.getMessage()));
         return baseResponse.getCustomizeResponse("merchants");
+    }
+
+    public Object getMerchant(UUID merchantID){
+        return new Object();
     }
 
     private ResponseMerchantListDTO convertToDTO(MstMerchant mstMerchant){

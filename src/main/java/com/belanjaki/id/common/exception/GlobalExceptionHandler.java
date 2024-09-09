@@ -25,6 +25,16 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(NeedApprovalException.class)
+    public ResponseEntity<Object> handleNeedApproval(NeedApprovalException ex, WebRequest request){
+        ErrorObjectDTO theErrorObject = new ErrorObjectDTO();
+        theErrorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        theErrorObject.setMessage(ex.getMessage());
+        theErrorObject.setTimeStamp(new Date());
+        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(theErrorObject, new Meta(ReturnCode.BAD_REQUEST.getStatusCode(), ReturnCode.BAD_REQUEST.getMessage()));
+        return new ResponseEntity<>(baseResponse.getCustomizeResponse("error"), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(OtpValidationException.class)
     public ResponseEntity<Object> handleOtpException(OtpValidationException ex, WebRequest request){
         ErrorObjectDTO theErrorObject = new ErrorObjectDTO();

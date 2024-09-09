@@ -4,7 +4,7 @@ import com.belanjaki.id.common.constant.BasePath;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestCreateUserDTO;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestLoginUserDTO;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestOtpDTO;
-import com.belanjaki.id.usersmanagement.service.AuthService;
+import com.belanjaki.id.usersmanagement.service.MstUserAuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+    private final MstUserAuthService authService;
 
     @PostMapping(
             path = BasePath.USER + "/validate-otp",

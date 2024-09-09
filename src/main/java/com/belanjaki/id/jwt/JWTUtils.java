@@ -86,7 +86,7 @@ public class JWTUtils {
                 .setClaims(extraClaims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALID * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALID))
                 .signWith(getSignInMethod(), SignatureAlgorithm.HS256)
                 .compact();
     }

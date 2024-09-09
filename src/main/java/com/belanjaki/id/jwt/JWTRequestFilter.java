@@ -5,14 +5,13 @@ import com.belanjaki.id.common.constant.RoleEnum;
 import com.belanjaki.id.common.exception.ResourceNotFoundException;
 import com.belanjaki.id.usersmanagement.model.MstRole;
 import com.belanjaki.id.usersmanagement.repository.MstRoleRepository;
-import com.belanjaki.id.usersmanagement.service.AuthService;
+import com.belanjaki.id.usersmanagement.service.MstUserAuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,7 +28,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JWTRequestFilter extends OncePerRequestFilter {
 
-    private final AuthService authService;
+    private final MstUserAuthService authService;
     private final JWTUtils jwtUtils;
     private final MstRoleRepository mstRoleRepository;
     private final ResourceLabel resourceLabel;

@@ -16,7 +16,7 @@ import com.belanjaki.id.common.dto.ResponseMessageAndEmailDTO;
 import com.belanjaki.id.common.util.OtpUtils;
 import com.belanjaki.id.common.util.RoleIdGetUtils;
 import com.belanjaki.id.jwt.JWTUtils;
-import com.belanjaki.id.usersmanagement.service.AuthService;
+import com.belanjaki.id.usersmanagement.service.MstUserAuthService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ import java.util.UUID;
 public class AuthAdministratorService {
 
     private final MstOtpAdminAuthRepository mstOtpAdminAuthRepository;
-    private final AuthService authService;
+    private final MstUserAuthService authService;
     private final AdminValidator adminValidator;
     private final ResourceLabel resourceLabel;
     private final PasswordEncoder passwordEncoder;

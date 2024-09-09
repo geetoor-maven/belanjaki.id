@@ -5,7 +5,7 @@ import com.belanjaki.id.common.exception.JwtAuthEntryPointException;
 import com.belanjaki.id.jwt.JWTRequestFilter;
 import com.belanjaki.id.jwt.JWTUtils;
 import com.belanjaki.id.usersmanagement.repository.MstRoleRepository;
-import com.belanjaki.id.usersmanagement.service.AuthService;
+import com.belanjaki.id.usersmanagement.service.MstUserAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +34,7 @@ public class WebSecurityConfig {
     private final ResourceLabel resourceLabel;
 
     @Bean
-    protected SecurityFilterChain configure(HttpSecurity http, AuthService userService, JWTUtils jwtUtil) throws Exception {
+    protected SecurityFilterChain configure(HttpSecurity http, MstUserAuthService userService, JWTUtils jwtUtil) throws Exception {
         JWTRequestFilter jwtRequestFilter = new JWTRequestFilter(userService, jwtUtil, mstRoleRepository, resourceLabel, permittedPathsExceptAdmin);
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())

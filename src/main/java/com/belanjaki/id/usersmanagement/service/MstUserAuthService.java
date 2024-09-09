@@ -11,6 +11,8 @@ import com.belanjaki.id.common.exception.ResourceNotFoundException;
 import com.belanjaki.id.common.util.OtpUtils;
 import com.belanjaki.id.common.util.RoleIdGetUtils;
 import com.belanjaki.id.jwt.JWTUtils;
+import com.belanjaki.id.merchant.model.MstMerchant;
+import com.belanjaki.id.merchant.repository.MstMerchantRepository;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestCreateUserDTO;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestLoginUserDTO;
 import com.belanjaki.id.usersmanagement.dto.user.request.RequestOtpDTO;
@@ -42,11 +44,12 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class AuthService {
+public class MstUserAuthService {
 
     private final MstAdministratorRepository mstAdministratorRepository;
     private final MstUserRepository mstUserRepository;
     private final MstRoleRepository mstRoleRepository;
+    private final MstMerchantRepository mstMerchantRepository;
     private final MstOtpUserAuthRepository mstOtpUserAuthRepository;
     private final ResourceLabel resourceLabel;
     private final UserValidator userValidator;
@@ -62,6 +65,9 @@ public class AuthService {
         }else if (role.equalsIgnoreCase(RoleEnum.ADMIN.getRoleName())){
             MstAdministrator mstAdministrator = mstAdministratorRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException(resourceLabel.getBodyLabel("admin.find.email.not.found")));
             return new org.springframework.security.core.userdetails.User(mstAdministrator.getEmail(), mstAdministrator.getPassword(), new ArrayList<>());
+        } else if (role.equalsIgnoreCase(RoleEnum.MERCHANT.getRoleName())) {
+            MstMerchant mstMerchant = mstMerchantRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException(resourceLabel.getBodyLabel("merchant.find.email.not.found")));
+            return new org.springframework.security.core.userdetails.User(mstMerchant.getEmail(), mstMerchant.getPassword(), new ArrayList<>());
         }
         return null;
     }

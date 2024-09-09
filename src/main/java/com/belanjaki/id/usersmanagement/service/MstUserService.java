@@ -24,7 +24,7 @@ import java.util.UUID;
 public class MstUserService {
 
     private final MstUserRepository mstUserRepository;
-    private final AuthService authService;
+    private final MstUserAuthService authService;
     private final MstUserAddressRepository mstUserAddressRepository;
     private final ResourceLabel resourceLabel;
 
