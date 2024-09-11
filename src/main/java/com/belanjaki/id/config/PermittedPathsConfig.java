@@ -27,6 +27,7 @@ public class PermittedPathsConfig {
         // merchant
         permittedPaths.add("/api/v1/merchant/create");
         permittedPaths.add("/api/v1/merchant/login");
+        permittedPaths.add("/api/v1/merchant/validate-otp");
 
         permittedPaths.add("/swagger-ui/index.html");
         permittedPaths.add("/swagger-resources/**");

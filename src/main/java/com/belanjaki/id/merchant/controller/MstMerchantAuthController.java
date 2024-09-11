@@ -2,6 +2,7 @@ package com.belanjaki.id.merchant.controller;
 
 import com.belanjaki.id.common.constant.BasePath;
 import com.belanjaki.id.merchant.dto.request.RequestMerchantLoginDTO;
+import com.belanjaki.id.merchant.dto.request.RequestValidateOtpMerchantDTO;
 import com.belanjaki.id.merchant.service.MstMerchantAuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,6 +30,14 @@ public class MstMerchantAuthController {
         return new ResponseEntity<>(mstMerchantAuthService.loginMerchant(dto), HttpStatus.OK);
     }
 
+    @PostMapping(
+            path = BasePath.MERCHANT + "/validate-otp",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> validateOtpMerchant(@Valid @RequestBody RequestValidateOtpMerchantDTO dto){
+        return new ResponseEntity<>(mstMerchantAuthService.validateOtpMerchant(dto), HttpStatus.OK);
+    }
 
 
 }
