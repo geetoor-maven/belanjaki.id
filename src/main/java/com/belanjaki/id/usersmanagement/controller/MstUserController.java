@@ -19,6 +19,13 @@ public class MstUserController {
 
     private final MstUserService mstUserService;
 
+    @GetMapping(
+            path = BasePath.USER
+    )
+    public ResponseEntity<Object> getUserInfo(){
+        return new ResponseEntity<>(mstUserService.getUserInfo(), HttpStatus.OK);
+    }
+
     @PutMapping(
             path = BasePath.USER + "/update-address",
             consumes = MediaType.APPLICATION_JSON_VALUE,

@@ -15,6 +15,7 @@ import com.belanjaki.id.usersmanagement.repository.MstUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 @Component
 @AllArgsConstructor
@@ -24,6 +25,21 @@ public class UserValidator {
     private final MstOtpUserAuthRepository mstOtpUserAuthRepository;
     private final ResourceLabel resourceLabel;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    public void validateFileUploadPhotoUser(MultipartFile file){
+        if (file == null || file.isEmpty()){
+            throw new ResourceNotFoundException(resourceLabel.getBodyLabel("photo.not.added.img"));
+        }
+
+        if (file.getSize() > 2 * 1024 * 1024) {
+            throw new IllegalArgumentException(resourceLabel.getBodyLabel("photo.file.size.two.mega.byte"));
+        }
+
+        String contentType = file.getContentType();
+        if (!"image/jpeg".equals(contentType) && !"image/png".equals(contentType)) {
+            throw new IllegalArgumentException(resourceLabel.getBodyLabel("photo.only.jpg.png.format"));
+        }
+    }
 
     public void createUserValidatorIfHasBeenRegister(RequestCreateUserDTO dto){
         mstUserRepository.findByEmail(dto.getEmail()).ifPresent(user -> {
