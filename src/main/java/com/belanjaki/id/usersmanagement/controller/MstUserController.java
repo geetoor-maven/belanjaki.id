@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Tag(name = "User API", description = "User API")
 @RestController
@@ -24,6 +27,13 @@ public class MstUserController {
     )
     public ResponseEntity<Object> getUserInfo(){
         return new ResponseEntity<>(mstUserService.getUserInfo(), HttpStatus.OK);
+    }
+
+    @PutMapping(
+            path = BasePath.USER + "/update-photo"
+    )
+    public ResponseEntity<Object> updatePhotoUser(@RequestParam("file_upload") MultipartFile file){
+        return new ResponseEntity<>(mstUserService.updatePhotoUser(file), HttpStatus.OK);
     }
 
     @PutMapping(

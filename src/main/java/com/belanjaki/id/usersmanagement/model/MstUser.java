@@ -36,8 +36,11 @@ public class MstUser extends BaseEntity implements Serializable {
 
     private String address;
 
-    @Column(name = "img_profile", length = 50)
+    @Column(name = "img_profile")
     private String imgProfile;
+
+    @Column(name = "url_profile")
+    private String urlProfile;
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)

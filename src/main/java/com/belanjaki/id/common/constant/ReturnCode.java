@@ -11,6 +11,7 @@ public enum ReturnCode {
     SUCCESSFULLY_OTP_SEND(200, "Otp send successfully"),
     SUCCESSFULLY_REGISTER(200, "You have successfully registered."),
     SUCCESSFULLY_UPDATE_ADDRESS(200, "You have successfully update address."),
+    SUCCESSFULLY_UPDATE_PHOTO(200, "You have successfully update photo."),
     SUCCESSFULLY_GET_DATA(200, "Successfully get data"),
     SUCCESSFULLY_UPDATED(200, "Successfully update data"),
 

@@ -22,6 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -45,19 +51,49 @@ public class MstUserService {
         return baseResponse.getCustomizeResponse("user");
     }
 
-    public Object updatePhotoUser(MultipartFile file){
+    @Transactional
+    public Object updatePhotoUser(MultipartFile file) {
         MstUser userLogin = authService.getUserLogin();
-
         userValidator.validateFileUploadPhotoUser(file);
 
         String path = resourceApp.getValue("path.user.photo");
-        // create file name
-        long currentTime = System.currentTimeMillis();
-        String fileName = StringUtils.cleanPath(userLogin.getUserId() + "_ " + currentTime + file.getOriginalFilename());
-        String pathFile = path + fileName;
+        String pathFile = path + userLogin.getUserId();
+        Path thePath = Paths.get(pathFile);
+        String fileName = userLogin.getUserId() + "_" + StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
-        return new Object();
+        try {
+            // Buat direktori jika belum ada
+            if (Files.notExists(thePath)) Files.createDirectory(thePath);
+
+            // Hapus file lama
+            Files.newDirectoryStream(thePath, userLogin.getUserId() + "_*").forEach(entry -> {
+                try {
+                    Files.deleteIfExists(entry);
+                    log.info("File lama {} dihapus.", entry.getFileName());
+                } catch (IOException e) {
+                    log.error("Gagal menghapus file lama: {}", e.getMessage());
+                }
+            });
+
+            // Simpan file baru
+            Files.copy(file.getInputStream(), thePath.resolve(fileName));
+        } catch (IOException e) {
+            throw new RuntimeException("Gagal memproses file: " + e.getMessage(), e);
+        }
+
+        userLogin.setImgProfile(fileName);
+        userLogin.setUrlProfile(thePath + "/" + fileName);
+
+        mstUserRepository.save(userLogin);
+
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .message(resourceLabel.getBodyLabel("msg.success.save"))
+                .build();
+
+        BaseResponse<ResponseDTO> baseResponse = new BaseResponse<>(responseDTO, new Meta(ReturnCode.SUCCESSFULLY_UPDATE_PHOTO.getStatusCode(), ReturnCode.SUCCESSFULLY_UPDATE_PHOTO.getMessage()));
+        return baseResponse.getCustomizeResponse("update_success");
     }
+
 
     @Transactional
     public Object updateUserAddress(RequestUpdateUserAddressDTO dto){
