@@ -20,6 +20,7 @@ public enum ReturnCode {
     UNAUTHORIZED(401, "Invalid credentials"),
     ACCESS_DENIED(403, "Access Denied"),
     NOT_ADMIN(403, "Your are not administrator"),
+    NOT_USER(403, "Your are not user"),
     DATA_NOT_FOUND(404, "Not found."),
     SOMETHING_WRONG(409, "Something wrong"),
     FAILED_DATA_ALREADY_EXISTS(409, "Duplicate registration: You are already registered.");

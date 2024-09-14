@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -140,15 +141,18 @@ public class MstUserService {
                 .name(user.getName())
                 .email(user.getEmail())
                 .numberPhone(user.getNumberPhone())
+                .imgUrl(user.getUrlProfile() == null ? "-" : user.getUrlProfile())
                 .responseUserAddressDTO(dto)
                 .build();
     }
-    private ResponseUserAddressDTO createResponseObjectUserAddress(MstUserAddress userAddress){
+
+    private ResponseUserAddressDTO createResponseObjectUserAddress(MstUserAddress userAddress) {
         return ResponseUserAddressDTO.builder()
-                .street(userAddress.getStreet())
-                .city(userAddress.getCity())
-                .state(userAddress.getState())
-                .postalCode(userAddress.getPostalCode())
+                .street(Optional.ofNullable(userAddress).map(MstUserAddress::getStreet).orElse("-"))
+                .city(Optional.ofNullable(userAddress).map(MstUserAddress::getCity).orElse("-"))
+                .state(Optional.ofNullable(userAddress).map(MstUserAddress::getState).orElse("-"))
+                .postalCode(Optional.ofNullable(userAddress).map(MstUserAddress::getPostalCode).orElse("-"))
                 .build();
     }
+
 }

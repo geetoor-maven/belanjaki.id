@@ -13,6 +13,7 @@ public class ResponseUserDTO {
     private String name;
     private String email;
     private String numberPhone;
+    private String imgUrl;
     @JsonProperty("address")
     private ResponseUserAddressDTO responseUserAddressDTO;
 }

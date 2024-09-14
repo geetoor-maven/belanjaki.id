@@ -1,6 +1,7 @@
 package com.belanjaki.id.jwt;
 
 import com.belanjaki.id.common.ResourceLabel;
+import com.belanjaki.id.common.constant.ReturnCode;
 import com.belanjaki.id.common.constant.RoleEnum;
 import com.belanjaki.id.common.exception.ResourceNotFoundException;
 import com.belanjaki.id.usersmanagement.model.MstRole;
@@ -33,6 +34,8 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     private final MstRoleRepository mstRoleRepository;
     private final ResourceLabel resourceLabel;
     private final Set<String> permittedPathsExceptAdmin;
+    private final Set<String> permittedPathsExceptUser;
+    private final Set<String> permittedPathsExceptMerchant;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -57,7 +60,13 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 
             // validasi request auth selain user admin, tidak bisa akses endpoint permittedPathExceptAdmin
             if (permittedPathsExceptAdmin.contains(request.getRequestURI()) && !roleName.contains(RoleEnum.ADMIN.getRoleName())) {
-                jwtUtils.generateResponseAccessDenied(response);
+                jwtUtils.generateResponseAccessDenied(response, ReturnCode.NOT_ADMIN.getMessage());
+                return;
+            }
+
+            // validasi request auth selain user, tidak bisa akses endpoint permittedPathExceptUser
+            if (permittedPathsExceptUser.contains(request.getRequestURI()) && !roleName.contains(RoleEnum.USER.getRoleName())) {
+                jwtUtils.generateResponseAccessDenied(response, ReturnCode.NOT_USER.getMessage());
                 return;
             }
 

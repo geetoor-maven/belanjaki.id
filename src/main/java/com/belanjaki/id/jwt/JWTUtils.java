@@ -119,16 +119,16 @@ public class JWTUtils {
         mapper.writeValue(httpResponse.getOutputStream(), baseResponse.getCustomizeResponse("unauthorized"));
     }
 
-    public void generateResponseAccessDenied(HttpServletResponse httpResponse)throws IOException{
+    public void generateResponseAccessDenied(HttpServletResponse httpResponse, String message)throws IOException{
         httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
         httpResponse.setStatus(HttpServletResponse.SC_OK);
 
         ErrorObjectDTO dto = new ErrorObjectDTO();
-        dto.setMessage(ReturnCode.NOT_ADMIN.getMessage());
+        dto.setMessage(message);
         dto.setStatusCode(ReturnCode.NOT_ADMIN.getStatusCode());
         dto.setTimeStamp(new Date());
 
-        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(dto, new Meta(ReturnCode.NOT_ADMIN.getStatusCode(), ReturnCode.NOT_ADMIN.getMessage()));
+        BaseResponse<ErrorObjectDTO> baseResponse = new BaseResponse<>(dto, new Meta(ReturnCode.NOT_ADMIN.getStatusCode(), message));
 
         final ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(httpResponse.getOutputStream(), baseResponse.getCustomizeResponse("access_denied"));
